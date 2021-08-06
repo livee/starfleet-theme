@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: jboss/keycloak:14.0.0
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      DB_VENDOR: postgres
+      DB_ADDR: postgres
+      DB_USER: keycloak
+      DB_DATABASE: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: password
+    volumes:
+      - ./themes/starfleet:/opt/jboss/keycloak/themes/starfleet
+    depends_on:
+      - database
+
+  database:
+    image: postgres
+    environment:
+      DB_ADDR: postgres
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
